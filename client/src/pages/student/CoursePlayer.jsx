@@ -48,7 +48,7 @@ export default function CoursePlayer() {
         const fetchCourseAndAccess = async () => {
             try {
                 // 1. Fetch Course Data
-                const { data: courseData } = await api.get(`/courses/${id}`);
+                const { data: courseData } = await api.get(`/api/courses/${id}`);
                 setCourse(courseData);
                 if (courseData.modules?.[0]?.units?.[0]) {
                     setActiveUnit(courseData.modules[0].units[0]);
@@ -61,11 +61,11 @@ export default function CoursePlayer() {
                         hasAccess = true;
                     } else {
                         try {
-                            const { data: { enrolled } } = await api.get(`/enrollments/${id}/check`);
+                            const { data: { enrolled } } = await api.get(`/api/enrollments/${id}/check`);
                             hasAccess = enrolled;
 
                             if (!enrolled && courseData.price === 0) {
-                                await api.post('/enrollments', { courseId: id });
+                                await api.post('/api/enrollments', { courseId: id });
                                 hasAccess = true;
                                 toast.success('Joined Free Course');
                             }
@@ -75,7 +75,7 @@ export default function CoursePlayer() {
                 setIsEnrolled(hasAccess);
 
                 if (hasAccess && user) {
-                    const progressRes = await api.get(`/progress/${id}`);
+                    const progressRes = await api.get(`/api/progress/${id}`);
                     setCompletedUnits(new Set(progressRes.data));
                 }
 
@@ -94,7 +94,7 @@ export default function CoursePlayer() {
         if (activeUnit?.type === 'QUIZ' && user && isEnrolled) {
             const checkSubmission = async () => {
                 try {
-                    const { data } = await api.get(`/learn/units/${activeUnit.id}/my-submission`);
+                    const { data } = await api.get(`/api/learn/units/${activeUnit.id}/my-submission`);
                     if (data) {
                         setQuizState(prev => ({
                             ...prev,
@@ -137,7 +137,7 @@ export default function CoursePlayer() {
             const newSet = new Set(completedUnits);
             newSet.add(activeUnit.id);
             setCompletedUnits(newSet);
-            await api.post('/progress', { unitId: activeUnit.id });
+            await api.post('/api/progress', { unitId: activeUnit.id });
             toast.success(progress === 100 ? 'Course Completed!' : 'Progress Saved!');
         } catch (_err) {
             toast.error('Failed to sync progress');
@@ -171,7 +171,7 @@ export default function CoursePlayer() {
 
     const submitQuiz = async () => {
         try {
-            const { data } = await api.post(`/learn/units/${activeUnit.id}/submit`, {
+            const { data } = await api.post(`/api/learn/units/${activeUnit.id}/submit`, {
                 content: quizState.answers
             });
 
@@ -257,7 +257,7 @@ export default function CoursePlayer() {
     const handlePurchase = async () => {
         if (course.price === 0) {
             try {
-                await api.post('/enrollments', { courseId: id });
+                await api.post('/api/enrollments', { courseId: id });
                 setIsEnrolled(true);
                 toast.success('Enrolled for Free!');
                 return;
@@ -268,7 +268,7 @@ export default function CoursePlayer() {
         }
 
         try {
-            const { data } = await api.post('/payments/initialize', { courseId: id });
+            const { data } = await api.post('/api/payments/initialize', { courseId: id });
             if (data.authorization_url) {
                 window.location.href = data.authorization_url;
             } else {
@@ -285,11 +285,11 @@ export default function CoursePlayer() {
             if (reference && !isEnrolled) {
                 setVerifyingPayment(true);
                 try {
-                    const { data } = await api.post('/payments/verify', { reference, courseId: id });
+                    const { data } = await api.post('/api/payments/verify', { reference, courseId: id });
                     if (data.status === 'success') {
                         setIsEnrolled(true);
                         toast.success('Course Access Unlocked!');
-                        navigate(`/student/course/${id}`, { replace: true });
+                        navigate(`/api/student/course/${id}`, { replace: true });
                     }
                 } catch (_err) {
                     toast.error('Payment Verification Failed');

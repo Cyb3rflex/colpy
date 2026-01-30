@@ -21,7 +21,7 @@ export default function ForgotPassword() {
         e.preventDefault();
         setIsLoading(true);
         try {
-            await api.post("/auth/forgot-password", { email });
+            await api.post("/api/auth/forgot-password", { email });
             setIsSubmitted(true);
             toast.success("Security token dispatched to your email");
         } catch (err) {

@@ -10,7 +10,7 @@ export default function AdminCourses() {
 
     const fetchCourses = async () => {
         try {
-            const { data } = await api.get('/courses');
+            const { data } = await api.get('/api/courses');
             setCourses(data);
         } catch (err) {
             console.error(err);
@@ -26,7 +26,7 @@ export default function AdminCourses() {
     const handleDelete = async (id) => {
         if (window.confirm('Are you sure? This will permanently delete the course and all associated data.')) {
             try {
-                await api.delete(`/courses/${id}`);
+                await api.delete(`/api/courses/${id}`);
                 setCourses(courses.filter(c => c.id !== id));
                 toast.success('Course deleted successfully');
             } catch (err) {

@@ -17,8 +17,8 @@ export default function AdminDashboard() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const coursesRes = await api.get("/courses");
-        const usersRes = await api.get("/users");
+        const coursesRes = await api.get("/api/courses");
+        const usersRes = await api.get("/api/users");
         setStats({
           courses: coursesRes.data.length,
           students: usersRes.data.length,

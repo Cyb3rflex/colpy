@@ -21,7 +21,7 @@ export default function StudentProfile() {
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-            await api.put('/users/profile', formData);
+            await api.put('/api/users/profile', formData);
             toast.success('Profile updated successfully');
         } catch (err) {
             console.error(err);

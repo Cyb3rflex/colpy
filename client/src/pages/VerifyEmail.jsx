@@ -19,7 +19,7 @@ export default function VerifyEmail() {
             }
 
             try {
-                const { data } = await api.get(`/auth/verify/${token}`);
+                const { data } = await api.get(`/api/auth/verify/${token}`);
                 setStatus('success');
                 setMessage(data.message);
             } catch (err) {

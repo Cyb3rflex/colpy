@@ -17,13 +17,13 @@ export default function StudentDashboard() {
   const [courses, setCourses] = useState([]);
   const [loading, setLoading] = useState(true);
   const location = useLocation();
-  const isBrowseMode = location.pathname.includes("/browse");
+  const isBrowseMode = location.pathname.includes("/api/browse");
 
   useEffect(() => {
     const fetchCourses = async () => {
       setLoading(true);
       try {
-        const endpoint = isBrowseMode ? "/courses" : "/enrollments/my";
+        const endpoint = isBrowseMode ? "/api/courses" : "/api/enrollments/my";
         const { data } = await api.get(endpoint);
         setCourses(data);
       } catch (err) {

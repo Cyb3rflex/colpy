@@ -39,7 +39,7 @@ export default function AdminProfile() {
     e.preventDefault();
     setIsLoading(true);
     try {
-      await api.put("/users/profile", formData);
+      await api.put("/api/users/profile", formData);
       toast.success("Profile updated successfully");
     } catch (err) {
       console.error(err);

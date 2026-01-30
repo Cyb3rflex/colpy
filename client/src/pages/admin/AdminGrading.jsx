@@ -18,7 +18,7 @@ export default function AdminGrading() {
     const fetchSubmissions = async () => {
         try {
             setLoading(true);
-            const { data } = await api.get('/learn/submissions/pending');
+            const { data } = await api.get('/api/learn/submissions/pending');
             setSubmissions(data);
         } catch (_err) {
             toast.error('Failed to load pending submissions');
@@ -29,7 +29,7 @@ export default function AdminGrading() {
 
     const handleSelectSubmission = async (id) => {
         try {
-            const { data } = await api.get(`/learn/submissions/${id}`);
+            const { data } = await api.get(`/api/learn/submissions/${id}`);
             setSelectedSubmission(data);
             setGradingData({ score: data.score || '', feedback: data.feedback || '' });
         } catch (_err) {
@@ -41,7 +41,7 @@ export default function AdminGrading() {
         e.preventDefault();
         setSubmitting(true);
         try {
-            await api.put(`/learn/submissions/${selectedSubmission.id}/grade`, {
+            await api.put(`/api/learn/submissions/${selectedSubmission.id}/grade`, {
                 score: parseInt(gradingData.score),
                 feedback: gradingData.feedback
             });

@@ -10,7 +10,7 @@ export default function AdminStudents() {
     useEffect(() => {
         const fetchStudents = async () => {
             try {
-                const { data } = await api.get('/admin/students');
+                const { data } = await api.get('/api/admin/students');
                 setStudents(data);
             } catch (err) {
                 console.error(err);

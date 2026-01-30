@@ -10,7 +10,7 @@ export default function FacilitatorProfile() {
     useEffect(() => {
         const fetchFacilitator = async () => {
             try {
-                const { data } = await api.get('/users/facilitator');
+                const { data } = await api.get('/api/users/facilitator');
                 setFacilitator(data);
             } catch (err) {
                 console.error('Failed to fetch facilitator:', err);

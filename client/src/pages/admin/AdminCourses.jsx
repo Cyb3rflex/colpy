@@ -77,7 +77,7 @@ export default function AdminCourses() {
                                 <button
                                     onClick={async () => {
                                         try {
-                                            await api.put(`/courses/${course.id}`, { isPublished: !course.isPublished });
+                                            await api.put(`/api/courses/${course.id}`, { isPublished: !course.isPublished });
                                             setCourses(courses.map(c => c.id === course.id ? { ...c, isPublished: !c.isPublished } : c));
                                             toast.success(course.isPublished ? 'Unpublished' : 'Published');
                                         } catch (_e) { toast.error('Update failed'); }
@@ -90,10 +90,10 @@ export default function AdminCourses() {
                                     {course.isPublished ? 'Unpublish' : 'Go Live'}
                                 </button>
                                 <div className="flex items-center gap-1 ml-auto sm:ml-0 bg-gray-900/50 p-1 rounded-xl border border-gray-700/50">
-                                    <Link to={`/student/course/${course.id}`} target="_blank" className="p-2 text-gray-400 hover:text-emerald-400 hover:bg-emerald-400/10 rounded-lg transition-all" title="Preview">
+                                    <Link to={`/api/student/course/${course.id}`} target="_blank" className="p-2 text-gray-400 hover:text-emerald-400 hover:bg-emerald-400/10 rounded-lg transition-all" title="Preview">
                                         <Eye size={18} />
                                     </Link>
-                                    <Link to={`/admin/courses/${course.id}`} className="p-2 text-gray-400 hover:text-cyan-400 hover:bg-cyan-400/10 rounded-lg transition-all" title="Edit">
+                                    <Link to={`/api/admin/courses/${course.id}`} className="p-2 text-gray-400 hover:text-cyan-400 hover:bg-cyan-400/10 rounded-lg transition-all" title="Edit">
                                         <Edit size={18} />
                                     </Link>
                                     <button onClick={() => handleDelete(course.id)} className="p-2 text-gray-400 hover:text-red-400 hover:bg-red-400/10 rounded-lg transition-all" title="Delete">
@@ -107,7 +107,7 @@ export default function AdminCourses() {
                         <div className="text-center py-20 bg-gray-800/20 rounded-3xl border-2 border-dashed border-gray-700/50">
                             <Plus size={48} className="mx-auto text-gray-600 mb-4" />
                             <p className="text-gray-400 font-bold uppercase tracking-widest">No courses found</p>
-                            <Link to="/admin/courses/new" className="text-cyan-400 text-xs font-black mt-2 inline-block hover:underline">Create your first course</Link>
+                            <Link to="/api/admin/courses/new" className="text-cyan-400 text-xs font-black mt-2 inline-block hover:underline">Create your first course</Link>
                         </div>
                     )}
                 </div>

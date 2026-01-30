@@ -1,0 +1,118 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id                String   @id @default(uuid())
+  email             String   @unique
+  password          String
+  name              String?
+  role              String   @default("STUDENT") // ADMIN, STUDENT
+  avatar            String?
+  title             String?
+  bio               String?
+  isVerified        Boolean  @default(false)
+  verificationToken String?
+  resetPasswordToken String?
+  resetPasswordExpires DateTime?
+  createdAt         DateTime @default(now())
+  
+  enrollments  Enrollment[]
+  progress     Progress[]
+  submissions  Submission[]
+  transactions Transaction[]
+}
+
+model Transaction {
+  id          String   @id @default(uuid())
+  userId      String
+  courseId    String
+  amount      Float
+  reference   String   @unique
+  status      String   @default("PENDING") // PENDING, SUCCESSFUL, FAILED
+  createdAt   DateTime @default(now())
+
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  course Course @relation(fields: [courseId], references: [id], onDelete: Cascade)
+}
+
+model Course {
+  id          String   @id @default(uuid())
+  title       String
+  description String
+  price       Float
+  level       String   // BEGINNER, INTERMEDIATE, ADVANCED
+  isPublished Boolean  @default(false)
+  createdAt   DateTime @default(now())
+
+  modules      Module[]
+  enrollments  Enrollment[]
+  transactions Transaction[]
+}
+
+model Module {
+  id       String @id @default(uuid())
+  title    String
+  order    Int
+  courseId String
+  course   Course @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  units    Unit[]
+}
+
+model Unit {
+  id          String @id @default(uuid())
+  title       String
+  type        String // VIDEO, TEXT, QUIZ, ASSIGNMENT
+  content     String?
+  assetUrl    String?
+  moduleId    String
+  module      Module @relation(fields: [moduleId], references: [id], onDelete: Cascade)
+  
+  progress    Progress[]
+  submissions Submission[]
+}
+
+model Enrollment {
+  id        String   @id @default(uuid())
+  userId    String
+  courseId  String
+  status    String   // ACTIVE, COMPLETED, EXPIRED
+  createdAt DateTime @default(now())
+
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  course Course @relation(fields: [courseId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, courseId])
+}
+
+model Progress {
+  id        String   @id @default(uuid())
+  userId    String
+  unitId    String
+  isCompleted Boolean @default(false)
+  
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  unit Unit @relation(fields: [unitId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, unitId])
+}
+
+model Submission {
+  id        String   @id @default(uuid())
+  userId    String
+  unitId    String
+  content   String?  // Store JSON of answers
+  score     Int?
+  feedback  String?
+  status    String   @default("PENDING") // PENDING (for manual grading), COMPLETED
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  unit Unit @relation(fields: [unitId], references: [id], onDelete: Cascade)
+}

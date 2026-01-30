@@ -1,23 +1,30 @@
 const { Resend } = require('resend');
 const dotenv = require('dotenv');
 
+
+const clientUrl = process.env.CLIENT_URL;
+
 dotenv.config();
 
 // Initialize Resend with API Key (mock usage if not present)
 // In production, ensure RESEND_API_KEY is allowed for the domain
-const resend = new Resend(process.env.RESEND_API_KEY || 're_123456789');
+if (!process.env.RESEND_API_KEY) {
+    throw new Error("RESEND_API_KEY is not set");
+}
+
+const resend = new Resend(process.env.RESEND_API_KEY);
 
 const sendWelcomeEmail = async (email, name) => {
     try {
         const { data, error } = await resend.emails.send({
-            from: 'CyberSec Platform <cybrflex@gmail.com>', // Use verified domain in prod
+            from: 'CyberSec Platform <hello@colpy.online>', // Use verified domain in prod
             to: [email],
             subject: 'Welcome to CyberSec Elite',
             html: `
         <div style="font-family: sans-serif; padding: 20px; color: #333; background-color: #f9fafb; border-radius: 8px;">
             <h1 style="color: #0891b2;">Welcome, ${name}!</h1>
             <p>You have successfully joined the platform. Get ready to master cybersecurity with our elite training modules.</p>
-            <p style="margin-top: 20px;">Go to your <a href="http://localhost:5173/student" style="color: #0891b2; font-weight: bold; text-decoration: none;">Dashboard</a> to start learning.</p>
+            <p style="margin-top: 20px;">Go to your <a href="${clientUrl}/student" style="color: #0891b2; font-weight: bold; text-decoration: none;">Dashboard</a> to start learning.</p>
         </div>
       `
         });
@@ -35,9 +42,9 @@ const sendWelcomeEmail = async (email, name) => {
 
 const sendVerificationEmail = async (email, name, token) => {
     try {
-        const verifyUrl = `http://localhost:5173/verify?token=${token}`;
+        const verifyUrl = `${clientUrl}/verify?token=${token}`;
         const { data, error } = await resend.emails.send({
-            from: 'CyberSec Platform <cybrflex@gmail.com>',
+            from: 'CyberSec Platform <verify@colpy.online>',
             to: [email],
             subject: 'Verify your email - CyberSec Platform',
             html: `
@@ -69,9 +76,9 @@ const sendVerificationEmail = async (email, name, token) => {
 
 const sendPasswordResetEmail = async (email, name, token) => {
     try {
-        const resetUrl = `http://localhost:5173/reset-password/${token}`;
+        const resetUrl = `${clientUrl}/reset-password/${token}`;
         const { data, error } = await resend.emails.send({
-            from: 'CyberSec Platform <cybrflex@gmail.com>',
+            from: 'CyberSec Platform <resetpassword@colpy.online>',
             to: [email],
             subject: 'Reset your password - CyberSec Platform',
             html: `

@@ -11,15 +11,20 @@ const PORT = process.env.PORT || 5000;
 
 // Rate Limiting
 const limiter = rateLimit({
-  windowMs: 1 * 60 * 1000, // 1 minute
-  max: 1000, // limit each IP to 1000 requests per windowMs
+  windowMs: 1 * 60 * 100, // 1 minute
+  max: 100, // limit each IP to 1000 requests per windowMs
 });
 
 // Middleware
 app.use(cors({
-  origin: ['http://localhost:5173', 'http://localhost:5174'],
+  origin: ['https://www.colpy.online', 'https://colpy-a67pftqh3-abdulmuheez-qazeem-s-projects.vercel.app'],
   credentials: true
 }));
+
+app.get("/health", (req, res) => {
+  res.status(200).send("OK");
+});
+
 app.use(helmet());
 app.use(limiter);
 app.use(express.json());

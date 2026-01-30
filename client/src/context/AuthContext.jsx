@@ -12,7 +12,7 @@ export const AuthProvider = ({ children }) => {
             const token = localStorage.getItem('token');
             if (token) {
                 try {
-                    const { data } = await api.get('/auth/me');
+                    const { data } = await api.get('/api/auth/me');
                     setUser({ ...data, token }); // ensuring token is handy if needed
                 } catch (error) {
                     console.error("Auth check failed", error);
@@ -25,14 +25,14 @@ export const AuthProvider = ({ children }) => {
     }, []);
 
     const login = async (email, password) => {
-        const { data } = await api.post('/auth/login', { email, password });
+        const { data } = await api.post('/api/auth/login', { email, password });
         localStorage.setItem('token', data.token);
         setUser(data);
         return data;
     };
 
     const register = async (name, email, password) => {
-        const { data } = await api.post('/auth/register', { name, email, password });
+        const { data } = await api.post('/api/auth/register', { name, email, password });
         if (data.token) {
             localStorage.setItem('token', data.token);
             setUser(data);
